@@ -29,10 +29,10 @@ func main() {
 		} else if !gematriaprimus.IsRune(r) {
 			fmt.Printf("%c", r)
 		} else {
-			o := gematriaprimus.RuneIndex(r) + 1
+			o := gematriaprimus.RuneIndex(r)
 			if n != 56 { // 57th rune is unencrypted
 				p := int(<-primes)
-				o = (o - p) % len(gematriaprimus.Letters)
+				o = (1 + o - p) % len(gematriaprimus.Letters)
 				if o < 0 {
 					o = len(gematriaprimus.Letters) + o
 				}
