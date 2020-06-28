@@ -3,24 +3,16 @@ package main
 import (
 	"fmt"
 
-	"github.com/henkman/euler/sieve"
 	"github.com/henkman/liberprimus"
 	"github.com/henkman/liberprimus/gematriaprimus"
+	"github.com/henkman/liberprimus/utils"
 )
 
 func main() {
 	page := liberprimus.Pages[56]
-	primes := make(chan uint64)
-	go func(n uint64) {
-		ps := sieve.Sieve(n)
-		var i uint64
-		for i = 0; i < n; i++ {
-			if ps.IsPrime(i) {
-				primes <- i
-			}
-		}
-	}(uint64(len(page)))
-	n := 0
+	pg := utils.MakePrimeGenerator()
+	pi := 0
+	ri := 0
 	for _, r := range page {
 		if r == gematriaprimus.SPACE {
 			fmt.Print(" ")
@@ -30,15 +22,16 @@ func main() {
 			fmt.Printf("%c", r)
 		} else {
 			o := gematriaprimus.RuneIndex(r)
-			if n != 56 { // 57th rune is unencrypted
-				p := int(<-primes)
+			if ri != 56 { // 57th rune is unencrypted
+				p := int(pg.GetNth(pi))
 				o = (1 + o - p) % len(gematriaprimus.Letters)
 				if o < 0 {
 					o = len(gematriaprimus.Letters) + o
 				}
+				pi++
 			}
 			fmt.Print(gematriaprimus.Letters[o])
-			n++
+			ri++
 		}
 	}
 	fmt.Println()
